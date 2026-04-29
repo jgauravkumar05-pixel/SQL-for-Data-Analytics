@@ -434,3 +434,323 @@ Day 2 helped me filter data.
 Day 3 helped me analyze data using aggregate functions, GROUP BY, and HAVING.
 
 SQL is not about memorizing queries, it is about understanding data and applying logic.
+
+
+Bhai Day 4 ke liye GitHub README me ye add karo.
+README edit करो → Day 3 ke niche bottom me paste करो → Commit message: Add Day 4 SQL joins notes
+
+---
+
+## 📘 Day 4: SQL JOINS
+
+Topic: Table Connection / SQL JOINS
+
+Day 4 focuses on connecting multiple tables using SQL JOINs.
+
+## 🧠 What Day 4 Covers
+
+🔹 What is a JOIN  
+🔹 Why JOIN is used in SQL  
+🔹 How to connect two tables  
+🔹 ON condition  
+🔹 Table aliases  
+🔹 INNER JOIN  
+🔹 LEFT JOIN  
+🔹 RIGHT JOIN  
+🔹 CROSS JOIN  
+🔹 SELF JOIN  
+🔹 JOIN with WHERE  
+🔹 JOIN with GROUP BY  
+
+## 🎯 Day 4 Purpose
+
+The purpose of Day 4 is to understand how to combine data from two or more tables.  
+In real databases, data is usually stored in multiple connected tables, so JOIN is one of the most important SQL concepts for Data Analysts.
+
+## 🧠 Day 4 Short Notes
+
+### What is JOIN?
+
+JOIN is used to combine data from two or more tables based on a related column.
+
+```sql
+SELECT s.student_name, c.course_name
+FROM students s
+JOIN courses c
+ON s.course_id = c.course_id;
+
+Memory line: JOIN = connecting related tables.
+
+ON Condition
+
+ON tells SQL which columns should match between two tables.
+
+ON s.course_id = c.course_id
+
+Memory line: ON = matching condition.
+
+INNER JOIN
+
+INNER JOIN returns only matching records from both tables.
+
+SELECT s.student_name, c.course_name
+FROM students s
+INNER JOIN courses c
+ON s.course_id = c.course_id;
+
+Memory line: INNER JOIN = only matching data.
+
+LEFT JOIN
+
+LEFT JOIN returns all records from the left table and matching records from the right table.
+If there is no match, right table columns show NULL.
+
+SELECT s.student_name, c.course_name
+FROM students s
+LEFT JOIN courses c
+ON s.course_id = c.course_id;
+
+Memory line: LEFT JOIN = full left table + matching right data.
+
+RIGHT JOIN
+
+RIGHT JOIN returns all records from the right table and matching records from the left table.
+
+SELECT s.student_name, c.course_name
+FROM students s
+RIGHT JOIN courses c
+ON s.course_id = c.course_id;
+
+Memory line: RIGHT JOIN = full right table + matching left data.
+
+CROSS JOIN
+
+CROSS JOIN returns all possible combinations between rows of two tables.
+
+SELECT *
+FROM students
+CROSS JOIN courses;
+
+Memory line: CROSS JOIN = all combinations.
+
+SELF JOIN
+
+SELF JOIN means joining a table with itself.
+
+SELECT e.emp_name, m.emp_name AS manager_name
+FROM employees e
+JOIN employees m
+ON e.manager_id = m.emp_id;
+
+Memory line: SELF JOIN = same table joined with itself.
+
+Table Alias
+
+Alias means short temporary name for a table.
+
+students s
+courses c
+
+Memory line: Alias = short name for table.
+
+💻 Day 4 Practical JOIN Queries
+
+Assume 2 tables:
+
+students(student_id, student_name, city, course_id, marks)
+courses(course_id, course_name, fees)
+-- 1. Show student name with course name
+SELECT s.student_name, c.course_name
+FROM students s
+INNER JOIN courses c
+ON s.course_id = c.course_id;
+
+-- 2. Show all students with their course details
+SELECT s.*, c.course_name, c.fees
+FROM students s
+INNER JOIN courses c
+ON s.course_id = c.course_id;
+
+-- 3. Show students from Delhi with course name
+SELECT s.student_name, s.city, c.course_name
+FROM students s
+INNER JOIN courses c
+ON s.course_id = c.course_id
+WHERE s.city = 'Delhi';
+
+-- 4. Show students with marks greater than 80 and course name
+SELECT s.student_name, s.marks, c.course_name
+FROM students s
+INNER JOIN courses c
+ON s.course_id = c.course_id
+WHERE s.marks > 80;
+
+-- 5. Show all students even if course is not assigned
+SELECT s.student_name, c.course_name
+FROM students s
+LEFT JOIN courses c
+ON s.course_id = c.course_id;
+
+-- 6. Find students who have no matching course
+SELECT s.student_name, s.course_id
+FROM students s
+LEFT JOIN courses c
+ON s.course_id = c.course_id
+WHERE c.course_id IS NULL;
+
+-- 7. Show all courses even if no student enrolled
+SELECT c.course_name, s.student_name
+FROM students s
+RIGHT JOIN courses c
+ON s.course_id = c.course_id;
+
+-- 8. Find courses with no students
+SELECT c.course_name
+FROM students s
+RIGHT JOIN courses c
+ON s.course_id = c.course_id
+WHERE s.student_id IS NULL;
+
+-- 9. Count students in each course
+SELECT c.course_name, COUNT(s.student_id) AS total_students
+FROM courses c
+LEFT JOIN students s
+ON c.course_id = s.course_id
+GROUP BY c.course_name;
+
+-- 10. Find average marks in each course
+SELECT c.course_name, AVG(s.marks) AS average_marks
+FROM courses c
+LEFT JOIN students s
+ON c.course_id = s.course_id
+GROUP BY c.course_name;
+
+-- 11. Show course-wise highest marks
+SELECT c.course_name, MAX(s.marks) AS highest_marks
+FROM courses c
+LEFT JOIN students s
+ON c.course_id = s.course_id
+GROUP BY c.course_name;
+
+-- 12. Show course-wise lowest marks
+SELECT c.course_name, MIN(s.marks) AS lowest_marks
+FROM courses c
+LEFT JOIN students s
+ON c.course_id = s.course_id
+GROUP BY c.course_name;
+
+-- 13. Show courses having more than 5 students
+SELECT c.course_name, COUNT(s.student_id) AS total_students
+FROM courses c
+LEFT JOIN students s
+ON c.course_id = s.course_id
+GROUP BY c.course_name
+HAVING COUNT(s.student_id) > 5;
+
+-- 14. Show course-wise average marks greater than 70
+SELECT c.course_name, AVG(s.marks) AS average_marks
+FROM courses c
+LEFT JOIN students s
+ON c.course_id = s.course_id
+GROUP BY c.course_name
+HAVING AVG(s.marks) > 70;
+
+-- 15. Show student name, city, course name, and fees
+SELECT s.student_name, s.city, c.course_name, c.fees
+FROM students s
+INNER JOIN courses c
+ON s.course_id = c.course_id;
+
+-- 16. Show students enrolled in BCA course
+SELECT s.student_name, c.course_name
+FROM students s
+INNER JOIN courses c
+ON s.course_id = c.course_id
+WHERE c.course_name = 'BCA';
+
+-- 17. Show students whose course fee is greater than 50000
+SELECT s.student_name, c.course_name, c.fees
+FROM students s
+INNER JOIN courses c
+ON s.course_id = c.course_id
+WHERE c.fees > 50000;
+
+-- 18. Show city-wise student count with course name
+SELECT s.city, c.course_name, COUNT(s.student_id) AS total_students
+FROM students s
+INNER JOIN courses c
+ON s.course_id = c.course_id
+GROUP BY s.city, c.course_name;
+
+-- 19. Show all students sorted by course fee highest first
+SELECT s.student_name, c.course_name, c.fees
+FROM students s
+INNER JOIN courses c
+ON s.course_id = c.course_id
+ORDER BY c.fees DESC;
+
+-- 20. Show top 5 students with course name based on marks
+SELECT s.student_name, s.marks, c.course_name
+FROM students s
+INNER JOIN courses c
+ON s.course_id = c.course_id
+ORDER BY s.marks DESC
+LIMIT 5;
+⚖️ Important Differences
+INNER JOIN vs LEFT JOIN
+INNER JOIN	LEFT JOIN
+Shows only matching records	Shows all records from left table
+Unmatched records are removed	Unmatched left records remain with NULL
+Best when only connected data is needed	Best when missing/unmatched data is also needed
+
+Memory line: INNER = only match, LEFT = all left + match.
+
+LEFT JOIN vs RIGHT JOIN
+LEFT JOIN	RIGHT JOIN
+Keeps all records from left table	Keeps all records from right table
+Right side becomes NULL if no match	Left side becomes NULL if no match
+More commonly used	Less commonly used
+
+Memory line: LEFT keeps left, RIGHT keeps right.
+
+INNER JOIN vs CROSS JOIN
+INNER JOIN	CROSS JOIN
+Matches rows based on a condition	Combines every row with every row
+Uses ON condition	Usually does not need ON
+Gives meaningful related data	Gives all possible combinations
+
+Memory line: INNER matches, CROSS combines everything.
+
+ON vs WHERE
+ON	WHERE
+Defines how tables connect	Filters final result
+Used for matching columns	Used for conditions
+Connection rule	Filtering rule
+
+Memory line: ON connects, WHERE filters.
+
+JOIN vs UNION
+JOIN	UNION
+Combines columns from multiple tables	Combines rows from multiple queries
+Data is placed side by side	Data is stacked vertically
+Needs related columns for matching	Needs same number of columns
+
+Memory line: JOIN adds columns, UNION adds rows.
+
+📊 Complete SQL Flow Till Day 4
+SELECT column_name
+FROM table1
+JOIN table2
+ON table1.common_column = table2.common_column
+WHERE condition
+GROUP BY column_name
+HAVING aggregate_condition
+ORDER BY column_name;
+🏆 Day 4 Key Takeaway
+
+Day 1 helped me view data.
+Day 2 helped me filter data.
+Day 3 helped me analyze data.
+Day 4 helped me connect multiple tables using JOINs.
+
+JOIN is used when required data is stored in more than one table.
