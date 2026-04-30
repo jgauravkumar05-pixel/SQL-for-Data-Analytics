@@ -754,3 +754,277 @@ Day 3 helped me analyze data.
 Day 4 helped me connect multiple tables using JOINs.
 
 JOIN is used when required data is stored in more than one table.
+
+
+
+-- SQL MASTER — DAY 5
+-- Topic: Subqueries
+-- ==========================================
+
+CREATE DATABASE sql_master_day5;
+USE sql_master_day5;
+
+-- ==========================================
+-- TABLE 1: students
+-- ==========================================
+
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(50),
+    city VARCHAR(50),
+    course_id INT,
+    marks INT
+);
+
+INSERT INTO students (student_id, student_name, city, course_id, marks)
+VALUES
+(1, 'Rahul', 'Delhi', 101, 85),
+(2, 'Amit', 'Mumbai', 102, 72),
+(3, 'Neha', 'Delhi', 101, 91),
+(4, 'Riya', 'Pune', 103, 64),
+(5, 'Karan', 'Jaipur', NULL, 55),
+(6, 'Simran', 'Mumbai', 104, 88),
+(7, 'Mohit', 'Delhi', 102, 45),
+(8, 'Anjali', 'Pune', 105, 78);
+
+-- ==========================================
+-- TABLE 2: courses
+-- ==========================================
+
+CREATE TABLE courses (
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(50),
+    fees INT
+);
+
+INSERT INTO courses (course_id, course_name, fees)
+VALUES
+(101, 'BCA', 40000),
+(102, 'BBA', 55000),
+(103, 'B.Tech', 90000),
+(104, 'MBA', 120000),
+(105, 'Data Analytics', 70000),
+(106, 'Digital Marketing', 30000);
+
+-- ==========================================
+-- DAY 5 PRACTICAL SUBQUERY QUESTIONS
+-- ==========================================
+
+-- 1. Find students whose marks are greater than average marks
+SELECT student_name, marks
+FROM students
+WHERE marks > (SELECT AVG(marks) FROM students);
+
+-- 2. Find the student with highest marks
+SELECT student_name, marks
+FROM students
+WHERE marks = (SELECT MAX(marks) FROM students);
+
+-- 3. Find the student with lowest marks
+SELECT student_name, marks
+FROM students
+WHERE marks = (SELECT MIN(marks) FROM students);
+
+-- 4. Find students whose marks are less than average marks
+SELECT student_name, marks
+FROM students
+WHERE marks < (SELECT AVG(marks) FROM students);
+
+-- 5. Find students enrolled in courses with fees greater than 50000
+SELECT student_name, course_id
+FROM students
+WHERE course_id IN (
+    SELECT course_id
+    FROM courses
+    WHERE fees > 50000
+);
+
+-- 6. Find students enrolled in courses with fees less than 60000
+SELECT student_name, course_id
+FROM students
+WHERE course_id IN (
+    SELECT course_id
+    FROM courses
+    WHERE fees < 60000
+);
+
+-- 7. Find students enrolled in the course with highest fee
+SELECT student_name, course_id
+FROM students
+WHERE course_id = (
+    SELECT course_id
+    FROM courses
+    WHERE fees = (SELECT MAX(fees) FROM courses)
+);
+
+-- 8. Find students enrolled in the course with lowest fee
+SELECT student_name, course_id
+FROM students
+WHERE course_id = (
+    SELECT course_id
+    FROM courses
+    WHERE fees = (SELECT MIN(fees) FROM courses)
+);
+
+-- 9. Find students whose course fee is equal to 40000
+SELECT student_name, course_id
+FROM students
+WHERE course_id IN (
+    SELECT course_id
+    FROM courses
+    WHERE fees = 40000
+);
+
+-- 10. Find students whose course is BCA
+SELECT student_name, course_id
+FROM students
+WHERE course_id = (
+    SELECT course_id
+    FROM courses
+    WHERE course_name = 'BCA'
+);
+
+-- 11. Find students whose course is BBA
+SELECT student_name, course_id
+FROM students
+WHERE course_id = (
+    SELECT course_id
+    FROM courses
+    WHERE course_name = 'BBA'
+);
+
+-- 12. Find students whose course fee is above average course fee
+SELECT student_name, course_id
+FROM students
+WHERE course_id IN (
+    SELECT course_id
+    FROM courses
+    WHERE fees > (SELECT AVG(fees) FROM courses)
+);
+
+-- 13. Find courses whose fees are greater than average fees
+SELECT course_name, fees
+FROM courses
+WHERE fees > (SELECT AVG(fees) FROM courses);
+
+-- 14. Find courses whose fees are less than average fees
+SELECT course_name, fees
+FROM courses
+WHERE fees < (SELECT AVG(fees) FROM courses);
+
+-- 15. Find students who have no course assigned
+SELECT student_name, course_id
+FROM students
+WHERE course_id IS NULL;
+
+-- 16. Find students whose course exists in the courses table
+SELECT student_name, course_id
+FROM students
+WHERE course_id IN (
+    SELECT course_id
+    FROM courses
+);
+
+-- 17. Find courses where at least one student is enrolled
+SELECT course_name
+FROM courses
+WHERE course_id IN (
+    SELECT course_id
+    FROM students
+);
+
+-- 18. Find courses where no student is enrolled
+SELECT course_name
+FROM courses
+WHERE course_id NOT IN (
+    SELECT course_id
+    FROM students
+    WHERE course_id IS NOT NULL
+);
+
+-- 19. Find students whose marks are greater than Rahul's marks
+SELECT student_name, marks
+FROM students
+WHERE marks > (
+    SELECT marks
+    FROM students
+    WHERE student_name = 'Rahul'
+);
+
+-- 20. Find students whose marks are less than Amit's marks
+SELECT student_name, marks
+FROM students
+WHERE marks < (
+    SELECT marks
+    FROM students
+    WHERE student_name = 'Amit'
+);
+
+-- 21. Find second highest marks
+SELECT MAX(marks) AS second_highest_marks
+FROM students
+WHERE marks < (
+    SELECT MAX(marks)
+    FROM students
+);
+
+-- 22. Find student with second highest marks
+SELECT student_name, marks
+FROM students
+WHERE marks = (
+    SELECT MAX(marks)
+    FROM students
+    WHERE marks < (SELECT MAX(marks) FROM students)
+);
+
+-- 23. Find students from the same city as Rahul
+SELECT student_name, city
+FROM students
+WHERE city = (
+    SELECT city
+    FROM students
+    WHERE student_name = 'Rahul'
+);
+
+-- 24. Find students who are not from Rahul's city
+SELECT student_name, city
+FROM students
+WHERE city <> (
+    SELECT city
+    FROM students
+    WHERE student_name = 'Rahul'
+);
+
+-- 25. Find students whose marks are greater than the lowest marks
+SELECT student_name, marks
+FROM students
+WHERE marks > (
+    SELECT MIN(marks)
+    FROM students
+);
+
+GitHub README ke liye title:
+
+# SQL Master - Day 5: Subqueries
+
+Today I practiced SQL Subqueries.
+
+## Topics Covered
+- What is a Subquery
+- Inner Query and Outer Query
+- Single-row Subquery
+- Multiple-row Subquery
+- Subquery with WHERE
+- Subquery with IN
+- Subquery with MAX(), MIN(), AVG()
+- Above Average Records
+- Highest and Lowest Records
+- Second Highest Marks
+- Subquery vs JOIN
+
+## Key Learning
+A subquery is a query written inside another query.  
+It is used when one query depends on the result of another query.
+
+## Memory Line
+Subquery = Query inside Query.
