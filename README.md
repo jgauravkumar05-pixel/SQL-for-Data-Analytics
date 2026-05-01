@@ -1028,3 +1028,274 @@ It is used when one query depends on the result of another query.
 
 ## Memory Line
 Subquery = Query inside Query.
+
+
+
+
+-- SQL MASTER — DAY 6
+-- Topic: CTE + Views
+-- ==========================================
+
+CREATE DATABASE sql_master_day6;
+USE sql_master_day6;
+
+-- ==========================================
+-- TABLE: students
+-- ==========================================
+
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(50),
+    city VARCHAR(50),
+    course VARCHAR(50),
+    gender VARCHAR(10),
+    admission_year INT,
+    marks INT
+);
+
+INSERT INTO students 
+(student_id, student_name, city, course, gender, admission_year, marks)
+VALUES
+(1, 'Rahul', 'Delhi', 'BCA', 'Male', 2023, 85),
+(2, 'Amit', 'Mumbai', 'BBA', 'Male', 2022, 72),
+(3, 'Neha', 'Delhi', 'BCA', 'Female', 2023, 91),
+(4, 'Riya', 'Pune', 'B.Tech', 'Female', 2024, 64),
+(5, 'Karan', 'Jaipur', 'BCA', 'Male', 2021, 55),
+(6, 'Simran', 'Mumbai', 'MBA', 'Female', 2022, 88),
+(7, 'Mohit', 'Delhi', 'BBA', 'Male', 2024, 45),
+(8, 'Anjali', 'Pune', 'Data Analytics', 'Female', 2023, 78),
+(9, 'Vikas', 'Delhi', 'BCA', 'Male', 2021, 69),
+(10, 'Pooja', 'Mumbai', 'MBA', 'Female', 2024, 82);
+
+-- ==========================================
+-- PART A: CTE PRACTICE
+-- ==========================================
+
+-- 1. Create a CTE to show students with marks greater than 80
+WITH high_marks AS (
+    SELECT student_id, student_name, marks
+    FROM students
+    WHERE marks > 80
+)
+SELECT *
+FROM high_marks;
+
+-- 2. Create a CTE to show only Delhi students
+WITH delhi_students AS (
+    SELECT student_id, student_name, city
+    FROM students
+    WHERE city = 'Delhi'
+)
+SELECT *
+FROM delhi_students;
+
+-- 3. Create a CTE to calculate average marks
+WITH avg_marks AS (
+    SELECT AVG(marks) AS average_marks
+    FROM students
+)
+SELECT *
+FROM avg_marks;
+
+-- 4. Create a CTE to show students above average marks
+WITH avg_marks AS (
+    SELECT AVG(marks) AS average_marks
+    FROM students
+)
+SELECT student_name, marks
+FROM students
+WHERE marks > (SELECT average_marks FROM avg_marks);
+
+-- 5. Create a CTE for city-wise student count
+WITH city_count AS (
+    SELECT city, COUNT(*) AS total_students
+    FROM students
+    GROUP BY city
+)
+SELECT *
+FROM city_count;
+
+-- 6. Create a CTE to show cities where student count is greater than 2
+WITH city_count AS (
+    SELECT city, COUNT(*) AS total_students
+    FROM students
+    GROUP BY city
+)
+SELECT *
+FROM city_count
+WHERE total_students > 2;
+
+-- 7. Create a CTE for course-wise average marks
+WITH course_avg AS (
+    SELECT course, AVG(marks) AS average_marks
+    FROM students
+    GROUP BY course
+)
+SELECT *
+FROM course_avg;
+
+-- 8. Create a CTE to show courses where average marks are greater than 70
+WITH course_avg AS (
+    SELECT course, AVG(marks) AS average_marks
+    FROM students
+    GROUP BY course
+)
+SELECT *
+FROM course_avg
+WHERE average_marks > 70;
+
+-- 9. Create a CTE for gender-wise student count
+WITH gender_count AS (
+    SELECT gender, COUNT(*) AS total_students
+    FROM students
+    GROUP BY gender
+)
+SELECT *
+FROM gender_count;
+
+-- 10. Create a CTE for admission-year-wise student count
+WITH year_count AS (
+    SELECT admission_year, COUNT(*) AS total_students
+    FROM students
+    GROUP BY admission_year
+)
+SELECT *
+FROM year_count;
+
+-- ==========================================
+-- PART B: VIEWS PRACTICE
+-- ==========================================
+
+-- 11. Create a View for high marks students
+CREATE VIEW high_marks_students AS
+SELECT student_id, student_name, marks
+FROM students
+WHERE marks > 80;
+
+SELECT *
+FROM high_marks_students;
+
+-- 12. Create a View for Delhi students
+CREATE VIEW delhi_students_view AS
+SELECT student_id, student_name, city
+FROM students
+WHERE city = 'Delhi';
+
+SELECT *
+FROM delhi_students_view;
+
+-- 13. Create a View for basic student details
+CREATE VIEW student_basic AS
+SELECT student_id, student_name, city, course
+FROM students;
+
+SELECT *
+FROM student_basic;
+
+-- 14. Create a View for course-wise average marks
+CREATE VIEW course_average_marks AS
+SELECT course, AVG(marks) AS average_marks
+FROM students
+GROUP BY course;
+
+SELECT *
+FROM course_average_marks;
+
+-- 15. Create a View for city-wise student count
+CREATE VIEW city_student_count AS
+SELECT city, COUNT(*) AS total_students
+FROM students
+GROUP BY city;
+
+SELECT *
+FROM city_student_count;
+
+-- 16. Create a View for students above average marks
+CREATE VIEW above_average_students AS
+SELECT student_id, student_name, marks
+FROM students
+WHERE marks > (SELECT AVG(marks) FROM students);
+
+SELECT *
+FROM above_average_students;
+
+-- 17. Create a View for female students
+CREATE VIEW female_students AS
+SELECT student_id, student_name, gender, marks
+FROM students
+WHERE gender = 'Female';
+
+SELECT *
+FROM female_students;
+
+-- 18. Create a View for BCA students
+CREATE VIEW bca_students AS
+SELECT student_id, student_name, course, marks
+FROM students
+WHERE course = 'BCA';
+
+SELECT *
+FROM bca_students;
+
+-- 19. Create a View for students sorted by marks
+CREATE VIEW students_by_marks AS
+SELECT student_id, student_name, marks
+FROM students
+ORDER BY marks DESC;
+
+SELECT *
+FROM students_by_marks;
+
+-- 20. Create a View for yearly admission summary
+CREATE VIEW yearly_admission_summary AS
+SELECT admission_year, COUNT(*) AS total_students
+FROM students
+GROUP BY admission_year;
+
+SELECT *
+FROM yearly_admission_summary;
+
+-- ==========================================
+-- MEMORY LINE
+-- CTE = temporary result for one query
+-- View = saved query for reuse
+-- ==========================================
+✅ README.md Content
+# SQL Master - Day 6: CTE + Views
+
+Today I learned and practiced **CTE and Views** in SQL.
+
+## Topics Covered
+
+- What is CTE
+- WITH keyword
+- CTE with WHERE
+- CTE with GROUP BY
+- CTE for average marks
+- CTE for city-wise count
+- CTE for course-wise average
+- What is View
+- Simple View
+- Complex View
+- Updatable View
+- Read-only View
+- CTE vs View
+- View vs Table
+- CTE vs Subquery
+
+## Key Learning
+
+A CTE is a temporary result set created using the WITH keyword.  
+It is mainly used to make complex queries clean and readable.
+
+A View is a saved SQL query that behaves like a virtual table.  
+It is mainly used when we want to reuse the same query again and again.
+
+## Memory Lines
+
+CTE = temporary result for one query.  
+View = saved query for reuse.
+
+## Confidence Statement
+
+I can retrieve, filter, analyze, join, use subqueries, and write reusable SQL logic using CTEs and Views.
