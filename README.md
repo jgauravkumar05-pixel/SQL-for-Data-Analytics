@@ -1299,3 +1299,242 @@ View = saved query for reuse.
 ## Confidence Statement
 
 I can retrieve, filter, analyze, join, use subqueries, and write reusable SQL logic using CTEs and Views.
+
+
+-- ==========================================
+-- SQL MASTER — DAY 7
+-- Topic: Window Functions
+-- ==========================================
+
+CREATE DATABASE sql_master_day7;
+USE sql_master_day7;
+
+-- ==========================================
+-- TABLE: students
+-- ==========================================
+
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(50),
+    city VARCHAR(50),
+    course VARCHAR(50),
+    marks INT
+);
+
+INSERT INTO students 
+(student_id, student_name, city, course, marks)
+VALUES
+(1, 'Rahul', 'Delhi', 'BCA', 85),
+(2, 'Amit', 'Mumbai', 'BBA', 72),
+(3, 'Neha', 'Delhi', 'BCA', 91),
+(4, 'Riya', 'Pune', 'B.Tech', 85),
+(5, 'Karan', 'Delhi', 'BBA', 60),
+(6, 'Simran', 'Mumbai', 'BCA', 91);
+
+-- ==========================================
+-- DAY 7: WINDOW FUNCTIONS PRACTICE
+-- ==========================================
+
+-- 1. Give row number to all students based on marks
+SELECT 
+    student_name,
+    marks,
+    ROW_NUMBER() OVER (ORDER BY marks DESC) AS row_num
+FROM students;
+
+-- 2. Rank students by marks
+SELECT 
+    student_name,
+    marks,
+    RANK() OVER (ORDER BY marks DESC) AS rank_no
+FROM students;
+
+-- 3. Dense rank students by marks
+SELECT 
+    student_name,
+    marks,
+    DENSE_RANK() OVER (ORDER BY marks DESC) AS dense_rank_no
+FROM students;
+
+-- 4. Compare ROW_NUMBER, RANK, and DENSE_RANK
+SELECT 
+    student_name,
+    marks,
+    ROW_NUMBER() OVER (ORDER BY marks DESC) AS row_num,
+    RANK() OVER (ORDER BY marks DESC) AS rank_no,
+    DENSE_RANK() OVER (ORDER BY marks DESC) AS dense_rank_no
+FROM students;
+
+-- 5. City-wise rank students by marks
+SELECT 
+    student_name,
+    city,
+    marks,
+    RANK() OVER (PARTITION BY city ORDER BY marks DESC) AS city_rank
+FROM students;
+
+-- 6. Course-wise rank students by marks
+SELECT 
+    student_name,
+    course,
+    marks,
+    RANK() OVER (PARTITION BY course ORDER BY marks DESC) AS course_rank
+FROM students;
+
+-- 7. Find top student from each city
+WITH city_rank AS (
+    SELECT 
+        student_name,
+        city,
+        marks,
+        ROW_NUMBER() OVER (PARTITION BY city ORDER BY marks DESC) AS rn
+    FROM students
+)
+SELECT 
+    student_name,
+    city,
+    marks
+FROM city_rank
+WHERE rn = 1;
+
+-- 8. Find top student from each course
+WITH course_rank AS (
+    SELECT 
+        student_name,
+        course,
+        marks,
+        ROW_NUMBER() OVER (PARTITION BY course ORDER BY marks DESC) AS rn
+    FROM students
+)
+SELECT 
+    student_name,
+    course,
+    marks
+FROM course_rank
+WHERE rn = 1;
+
+-- 9. Show average marks of each city with every student
+SELECT 
+    student_name,
+    city,
+    marks,
+    AVG(marks) OVER (PARTITION BY city) AS city_avg_marks
+FROM students;
+
+-- 10. Show average marks of each course with every student
+SELECT 
+    student_name,
+    course,
+    marks,
+    AVG(marks) OVER (PARTITION BY course) AS course_avg_marks
+FROM students;
+
+-- ==========================================
+-- EXTRA PRACTICE
+-- ==========================================
+
+-- 11. Show highest marks in each city with every student
+SELECT 
+    student_name,
+    city,
+    marks,
+    MAX(marks) OVER (PARTITION BY city) AS city_highest_marks
+FROM students;
+
+-- 12. Show lowest marks in each course with every student
+SELECT 
+    student_name,
+    course,
+    marks,
+    MIN(marks) OVER (PARTITION BY course) AS course_lowest_marks
+FROM students;
+
+-- 13. Count students in each city with every student
+SELECT 
+    student_name,
+    city,
+    marks,
+    COUNT(*) OVER (PARTITION BY city) AS total_students_in_city
+FROM students;
+
+-- 14. Count students in each course with every student
+SELECT 
+    student_name,
+    course,
+    marks,
+    COUNT(*) OVER (PARTITION BY course) AS total_students_in_course
+FROM students;
+
+-- 15. Find top 2 students from each city
+WITH city_rank AS (
+    SELECT 
+        student_name,
+        city,
+        marks,
+        ROW_NUMBER() OVER (PARTITION BY city ORDER BY marks DESC) AS rn
+    FROM students
+)
+SELECT 
+    student_name,
+    city,
+    marks
+FROM city_rank
+WHERE rn <= 2;
+
+-- ==========================================
+-- MEMORY LINES
+-- ==========================================
+
+-- ROW_NUMBER = unique number for every row
+-- RANK = same rank for same marks, but gap comes
+-- DENSE_RANK = same rank for same marks, no gap
+-- PARTITION BY = group without merging rows
+-- Window Function = analysis without reducing rows
+✅ README.md Content
+# SQL Master - Day 7: Window Functions
+
+Today I learned and practiced **SQL Window Functions**.
+
+Window functions are used to perform calculations across rows without reducing the number of rows.
+
+## Topics Covered
+
+- What is a Window Function
+- OVER() clause
+- PARTITION BY
+- ORDER BY inside OVER()
+- ROW_NUMBER()
+- RANK()
+- DENSE_RANK()
+- City-wise ranking
+- Course-wise ranking
+- Top student from each city
+- Top student from each course
+- Average marks with every student
+- Window Function vs GROUP BY
+
+## Key Learning
+
+Window functions help us do row-wise analysis while keeping all rows in the output.
+
+## Important Memory Lines
+
+ROW_NUMBER = unique number for every row.  
+RANK = same rank for same marks, but gap comes.  
+DENSE_RANK = same rank for same marks, no gap.  
+PARTITION BY = group without merging rows.  
+Window Function = analysis without reducing rows.
+
+## SQL Journey Till Day 7
+
+Day 1 → Data Retrieval  
+Day 2 → Data Filtering  
+Day 3 → Data Analysis  
+Day 4 → JOINS  
+Day 5 → Subqueries  
+Day 6 → CTE + Views  
+Day 7 → Window Functions  
+
+## Confidence Statement
+
+I can retrieve, filter, analyze, join data, use subqueries, CTEs, Views, and perform advanced analysis using Window Functions.
